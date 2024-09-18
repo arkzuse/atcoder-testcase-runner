@@ -3,25 +3,24 @@ package utils
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"log"
 	"net/http"
 )
 
-func ScrapeTestcase(contest string, task string) [][]string {
+func ScrapeTestcase(contest string, task string) ([][]string, error) {
 	res, err := http.Get(fmt.Sprintf("https://atcoder.jp/contests/%s/tasks/%s_%s", contest, contest, task))
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+		return nil, fmt.Errorf("error: %s", res.Status)
 	}
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	enSpan := doc.Find("span .lang-en")
@@ -54,5 +53,5 @@ func ScrapeTestcase(contest string, task string) [][]string {
 		}
 	})
 
-	return samples
+	return samples, nil
 }

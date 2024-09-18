@@ -6,7 +6,12 @@ import (
 )
 
 func main() {
-	var samples = utils.ScrapeTestcase("abc371", "b")
+	samples, err := utils.ScrapeTestcase("abc371", "a")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	for _, sample := range samples {
 		fmt.Println(sample[0])
