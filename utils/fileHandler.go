@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func WriteInputFile(fileName string, contest string, task string, input []string) error {
+func WriteFile(fileName string, contest string, task string, input []string) error {
 	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func WriteInputFile(fileName string, contest string, task string, input []string
 	return nil
 }
 
-func ReadInputFile(fileName string) ([]string, error) {
+func ReadFile(fileName string) ([]string, error) {
 	file, err := os.OpenFile(fileName, os.O_RDONLY, 0644)
 	if err != nil {
 		return nil, err
