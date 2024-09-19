@@ -15,7 +15,9 @@ func WriteInputFile(fileName string, contest string, task string, input []string
 
 	defer file.Close()
 
-	content := inputFileContent(contest, task, input)
+	input = append([]string{fmt.Sprintf("%s %s\n", contest, task), fmt.Sprintf("%d\n", len(input))}, input...)
+
+	content := arrayToContent(contest, task, input)
 	_, err = file.WriteString(content)
 	if err != nil {
 		return err
@@ -75,11 +77,9 @@ func ReadInputFile(fileName string) ([]string, error) {
 	return input, nil
 }
 
-func inputFileContent(contest string, task string, input []string) string {
+func arrayToContent(contest string, task string, input []string) string {
 	var content string
 
-	content += fmt.Sprintf("%s %s\n\n", contest, task)
-	content += fmt.Sprintf("%d\n\n", len(input))
 	for _, i := range input {
 		content += fmt.Sprintf("%s\n", i)
 	}
