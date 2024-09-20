@@ -34,12 +34,20 @@ jobs:
   
       - name: Build the project
         run: |
-          GOOS=$(echo ${{ matrix.os }} | cut -d'-' -f1)
-          GOARCH=amd64  # Adjust architecture if needed, e.g., for ARM
-          go build -o myapp-${GOOS}-${GOARCH}
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            GOOS=linux
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            GOOS=windows
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            GOOS=darwin
+          fi
+
+          GOARCH=amd64
+          go build -o atcoder-testcase-runner-${GOOS}-${GOARCH}
+        shell: bash
   
       - name: Upload binary artifact
         uses: actions/upload-artifact@v3
         with:
-          name: myapp-${{ matrix.os }}
-          path: myapp-${{ matrix.os }}-amd64
+          name: atcoder-testcase-runner-${{ matrix.os }}
+          path: atcoder-testcase-runner-${{ matrix.os }}-amd64
