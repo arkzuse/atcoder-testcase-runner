@@ -29,11 +29,13 @@ func RunSolution(fileName string, input string) (string, error) {
 
 	cmd.Stdin = bytes.NewBufferString(input)
 	var out bytes.Buffer
+	var stderr bytes.Buffer
 	cmd.Stdout = &out
+	cmd.Stderr = &stderr
 
 	err = cmd.Run()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%s: %s", err, stderr.String())
 	}
 
 	return out.String(), nil
