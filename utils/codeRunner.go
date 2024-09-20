@@ -4,11 +4,17 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 )
 
-func RunSolution(command string, input string) (string, error) {
+func RunSolution(fileName string, input string) (string, error) {
 	os := runtime.GOOS
+	command, err := generateCommand(fileName)
+	if err != nil {
+		return "", err
+	}
+
 	var cmd *exec.Cmd
 	switch os {
 	case "darwin":
@@ -25,10 +31,27 @@ func RunSolution(command string, input string) (string, error) {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		return "", err
 	}
 
 	return out.String(), nil
+}
+
+func generateCommand(fileName string) (string, error) {
+	ext := filepath.Ext(fileName)
+
+	switch ext {
+	case ".cpp":
+		return fmt.Sprintf("g++ -lm %s -o %s && ./%s", fileName, fileName[:len(fileName)-len(ext)], fileName[:len(fileName)-len(ext)]), nil
+	case ".java":
+		return fmt.Sprintf("javac %s && java %s", fileName, fileName[:len(fileName)-len(ext)]), nil
+	case ".kt":
+		return fmt.Sprintf("kotlinc %s -include-runtime -d %s.jar && java -jar %s.jar", fileName, fileName[:len(fileName)-len(ext)], fileName[:len(fileName)-len(ext)]), nil
+	case ".py":
+		return fmt.Sprintf("python3 %s", fileName), nil
+	default:
+		return "", fmt.Errorf("unsupported file extension")
+	}
 }
