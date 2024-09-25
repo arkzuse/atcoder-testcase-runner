@@ -32,7 +32,7 @@ go build
 
 To run from source:
 ```
-go run main.go atcoder.* -c <contest> -t <p>
+go run main.go atcoder.* -c <contest> -t <task>
 ```
 
 For help:
